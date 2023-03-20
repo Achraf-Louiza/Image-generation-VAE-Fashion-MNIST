@@ -18,6 +18,9 @@ You can install the dependencies using pip:
 
           pip install -r requirements.txt
 
+## References
+- Kingma, D. P., & Welling, M. (2013). Auto-Encoding Variational Bayes. arXiv preprint arXiv:1312.6114. https://arxiv.org/abs/1312.6114
+
 ## Reconstructions
 <p align="center">
 <img src="results/reconstruction.png">
