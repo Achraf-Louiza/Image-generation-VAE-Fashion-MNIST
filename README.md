@@ -17,3 +17,18 @@ To use this repository, you'll need to have the following prerequisites installe
 You can install the dependencies using pip:
 
           pip install -r requirements.txt
+
+## Reconstructions
+<p align="center">
+<img src="results/reconstruction.png">
+</p>  
+
+## Latent space
+<p align="center">
+<img src="results/latent_space.png">
+</p>  
+
+## Image generation using [-3, 3] * [-3, 3] grid
+<p align="center">
+<img src="results/generation.png">
+</p>
