@@ -31,10 +31,15 @@ class CVAE:
         """
         # Input: Batch size * sequence length * number of features
         self.encoder_inputs = Input(shape=(self.nrows, self.ncols, 1))
-
+        
         # Convolution block 1
-        x = Conv2D(filters=32, kernel_size=5, padding="same", strides=2, activation="relu")(self.encoder_inputs)
+        x = Conv2D(filters=16, kernel_size=3, padding="same", strides=1, activation="relu")(self.encoder_inputs)
         x = Conv2D(filters=32, kernel_size=3, padding="same", strides=1, activation="relu")(x)
+        x = MaxPooling2D()(x)
+        
+        # Convolution block 2
+        x = Conv2D(filters=16, kernel_size=5, padding="same", strides=1, activation="relu")(self.encoder_inputs)
+        x = Conv2D(filters=32, kernel_size=5, padding="same", strides=1, activation="relu")(x)
         x = MaxPooling2D()(x)
         
         # Batch normalization
@@ -45,9 +50,6 @@ class CVAE:
         
         # Flatten the output of the convolutional layers
         x = Flatten()(x)
-        
-        # Dense hidden layer
-        x = Dense(128)(x)
         
         # Encoder output: Multivariate gaussian distribution per input sequence
         self.z_mean = Dense(units=self.latent_dim, name='Z-Mean')(x)
@@ -71,7 +73,11 @@ class CVAE:
         
         # Convolutional transpose block 1
         x = Conv2DTranspose(filters=32, kernel_size=5, padding="same", strides=2, activation="relu")(x)
-        x = Conv2DTranspose(filters=32, kernel_size=3, padding="same", strides=2, activation="relu")(x)
+        x = Conv2DTranspose(filters=16, kernel_size=5, padding="same", strides=2, activation="relu")(x)
+        
+        # Convolutional transpose block 1
+        x = Conv2DTranspose(filters=32, kernel_size=3, padding="same", strides=1, activation="relu")(x)
+        x = Conv2DTranspose(filters=16, kernel_size=3, padding="same", strides=1, activation="relu")(x)
         
         # Batch normalization
         x = BatchNormalization()(x)
@@ -80,7 +86,7 @@ class CVAE:
         x = Dropout(0.1)(x)
         
         # Decoder output: Input reconstruction
-        x = Conv2DTranspose(filters=1, kernel_size=3, activation='sigmoid', padding='same')(x)
+        x = Conv2D(filters=1, kernel_size=3, activation='sigmoid', strides=1, padding='same')(x)
         
         self.decoder = Model(self.z, x, name='Decoder-Model')
         # Decoder final output: A custom variational loss layer with KL & Reconstruction loss functions linked to output layer
